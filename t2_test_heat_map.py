@@ -29,11 +29,11 @@ def generate_triple_fc_heatmap(n_variables, sub_labels_1, sub_labels_2,
 
     # Generate random group-level data matrices
     group_matrix_1 = np.random.randn(n_variables, n_subjects_1)
-    group_matrix_2 = np.random.randn(n_variables, n_subjects_2)
 
     # Normalize to reasonable range [-1, 1]
     fc_matrix_1 = np.tanh(group_matrix_1)
-    fc_matrix_2 = np.tanh(group_matrix_2)
+    indexes = [sub_labels_1.index(x) for x in sub_labels_2]
+    fc_matrix_2 = fc_matrix_1[:, indexes]
 
     # Create labels
     var_labels = [f'var_{i + 1}' for i in range(n_variables)]
@@ -97,7 +97,7 @@ if __name__ == "__main__":
     fc_data_1, fc_data_2 = generate_triple_fc_heatmap(
         n_variables=4,
         sub_labels_1=[1, 2, 3, 4, 5, 6],
-        sub_labels_2=[1, 3, 4, 6],
+        sub_labels_2=[1, 6, 2, 3],
         title_label_1='Rest Data (Variables × Subjects)',
         title_label_2=r'$\mathbf{Y}$',
         seed=60

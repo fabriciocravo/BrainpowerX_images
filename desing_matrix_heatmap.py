@@ -79,21 +79,25 @@ def generate_design_matrices(sub_labels_1, sub_labels_2, sub_labels_3, seed=None
                 vmin=0, vmax=1,
                 xticklabels=['Group A', 'Group B'],
                 yticklabels=sub_labels_2_formatted,
+                linewidths=0.5,  # Add lines between cells
+                linecolor='white',  # White lines to separate subjects/groups
                 ax=ax2)
 
-    ax2.set_title('X t2-test', fontsize=title_font_size, pad=15)
+    ax2.set_title(r'$\mathbf{X}$ t2-test', fontsize=title_font_size, pad=15)
     ax2.tick_params(axis='both', which='major', labelsize=label_font_size)  # ADD THIS LINE
 
     # Design Matrix 3: Correlation test
     sns.heatmap(design_3,
                 cmap='viridis',
                 cbar=True,
-                cbar_kws={'label': 'Category'},
+                cbar_kws={'label': 'Score'},
                 xticklabels=[''],
                 yticklabels=sub_labels_3_formatted,
+                linewidths = 0.5,  # Add lines between cells
+                linecolor = 'white',  # White lines to separate subjects/groups
                 ax=ax3)
 
-    ax3.set_title('X corr-test', fontsize=title_font_size, pad=15)
+    ax3.set_title(r'$\mathbf{X}$ corr-test', fontsize=title_font_size, pad=15)
     ax3.tick_params(axis='both', which='major', labelsize=label_font_size)  # ADD THIS LINE
 
     plt.tight_layout()
@@ -111,7 +115,7 @@ def generate_design_matrices(sub_labels_1, sub_labels_2, sub_labels_3, seed=None
 if __name__ == "__main__":
     # Different subject lists for each test type
     sub_list_1 = [2, 5, 6, 7]  # 5 subjects for one-sample
-    sub_list_2 = [1, 3, 7, 8, 3, 6, 10, 12]  # 10 subjects for two-sample
+    sub_list_2 = [1, 6, 2, 3]  # 10 subjects for two-sample
     sub_list_3 = [1, 2, 5, 7, 8, 9]  # 5 subjects for correlation
 
     design_1, design_2, design_3 = generate_design_matrices(
