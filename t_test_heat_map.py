@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 from matplotlib import gridspec
+from controlling_variables import *
 
 
 def generate_triple_fc_heatmap(n_variables, sub_labels_1, sub_labels_2,
@@ -36,13 +37,13 @@ def generate_triple_fc_heatmap(n_variables, sub_labels_1, sub_labels_2,
     fc_matrix_2 = np.tanh(group_matrix_2)
 
     # Create labels
-    var_labels = [f'var_{i + 1}' for i in range(n_variables)]
-    sub_labels_1_formatted = [f'sub_{x}' for x in sub_labels_1]
-    sub_labels_2_formatted = [f'sub_{x}' for x in sub_labels_2]
+    var_labels = [f'var{i + 1}' for i in range(n_variables)]
+    sub_labels_1_formatted = [f'sub{x}' for x in sub_labels_1]
+    sub_labels_2_formatted = [f'sub{x}' for x in sub_labels_2]
 
     # Find common subjects for subtraction
     sub_labels_3 = list(set(sub_labels_1) & set(sub_labels_2))
-    sub_labels_3_formatted = [f'sub_{x}' for x in sub_labels_3]
+    sub_labels_3_formatted = [f'sub{x}' for x in sub_labels_3]
 
     # Get indexes for common subjects
     indexes_in_1 = [sub_labels_1.index(x) for x in sub_labels_3]
@@ -54,14 +55,13 @@ def generate_triple_fc_heatmap(n_variables, sub_labels_1, sub_labels_2,
     # TO:
     fig = plt.figure(figsize=(20, max(6, n_variables * 0.15)))  # Slightly wider for colorbar
     max_subjects = max(n_subjects_1, n_subjects_2)
-    gs = gridspec.GridSpec(1, 4, width_ratios=[max_subjects, max_subjects, 0.3,
-                                               len(sub_labels_3)],
-                           wspace=0.3)
+    gs = gridspec.GridSpec(3, 3, width_ratios=[max_subjects, max_subjects, 0.1],
+                           height_ratios=[1, 0.05, 0.8], wspace=0.3, hspace=0.4)
 
-    ax1 = fig.add_subplot(gs[0])
-    ax2 = fig.add_subplot(gs[1])
-    ax3 = fig.add_subplot(gs[2])
-    ax4 = fig.add_subplot(gs[3])
+    ax1 = fig.add_subplot(gs[0, 0])  # Top-left: Rest Data
+    ax2 = fig.add_subplot(gs[0, 1])  # Top-right: Task Data
+    ax3 = fig.add_subplot(gs[0, 2])  # Colorbar (much narrower)
+    ax4 = fig.add_subplot(gs[2, :2])  # Bottom: Difference plot
 
     # First heatmap (no colorbar)
     sns.heatmap(fc_matrix_1,
@@ -74,9 +74,10 @@ def generate_triple_fc_heatmap(n_variables, sub_labels_1, sub_labels_2,
                 yticklabels=var_labels,
                 ax=ax1)
 
-    ax1.set_title(title_label_1, fontsize=14, pad=20)
-    ax1.set_ylabel('Variables (Flattened Connections)', fontsize=12)
-    ax1.tick_params(axis='x', rotation=45)
+    ax1.set_title(title_label_1, fontsize=title_fonts, pad=20)
+    ax1.set_ylabel('Variables (Flattened Connections)', fontsize=y_label_fonts)
+    ax1.tick_params(axis='x', rotation=45, labelsize=x_label_fonts)
+    ax1.tick_params(axis='y', rotation=0, labelsize=y_label_fonts)
     ax1.set_aspect('equal', adjustable='box')
 
     # Second heatmap (with colorbar)
@@ -91,9 +92,10 @@ def generate_triple_fc_heatmap(n_variables, sub_labels_1, sub_labels_2,
                      ax=ax2)
 
 
-    ax2.set_title(title_label_2, fontsize=14, pad=20)
-    ax2.set_ylabel('', fontsize=12)
-    ax2.tick_params(axis='x', rotation=45)
+    ax2.set_title(title_label_2, fontsize=title_fonts, pad=20)
+    ax2.set_ylabel('', fontsize=y_label_fonts)
+    ax2.tick_params(axis='x', rotation=45, labelsize=x_label_fonts)
+    ax2.tick_params(axis='y', labelsize=y_label_fonts)
     ax2.set_aspect('equal', adjustable='box')
 
     cbar = plt.colorbar(im.collections[0], cax=ax3, shrink=0.5)
@@ -107,13 +109,13 @@ def generate_triple_fc_heatmap(n_variables, sub_labels_1, sub_labels_2,
                 cbar=False,
                 vmin=-2, vmax=2,
                 xticklabels=sub_labels_3_formatted,
-                yticklabels=False,
+                yticklabels=var_labels,
                 ax=ax4)  # Use ax3
 
-    ax4.set_title(title_label_3, fontsize=14, pad=20)  # Use ax3
-    ax4.set_title(title_label_3, fontsize=14, pad=20)
-    ax4.set_ylabel('', fontsize=12)
-    ax4.tick_params(axis='x', rotation=45)
+    ax4.set_title(title_label_3, fontsize=title_fonts, pad=20)
+    ax4.set_ylabel('', fontsize=y_label_fonts)
+    ax4.tick_params(axis='x', rotation=45, labelsize=x_label_fonts)
+    ax4.tick_params(axis='y', rotation=0, labelsize=y_label_fonts)
     ax4.set_aspect('equal', adjustable='box')
 
     if save_path:
@@ -134,6 +136,6 @@ if __name__ == "__main__":
         sub_labels_2=[2, 3, 5, 6, 7, 8],
         title_label_1='Rest Data (Variables × Subjects)',
         title_label_2='Task Data (Variables × Subjects)',
-        title_label_3=r'$\mathbf{Y}$ = Task - Rest',
+        title_label_3=r'$\mathbf{Y}$ = Rest - Task',
         seed=60
     )

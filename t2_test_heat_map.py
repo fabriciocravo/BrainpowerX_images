@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 from matplotlib import gridspec
-
+from controlling_variables import *
 
 def generate_triple_fc_heatmap(n_variables, sub_labels_1, sub_labels_2,
                                title_label_1, title_label_2,
@@ -36,13 +36,15 @@ def generate_triple_fc_heatmap(n_variables, sub_labels_1, sub_labels_2,
     fc_matrix_2 = fc_matrix_1[:, indexes]
 
     # Create labels
-    var_labels = [f'var_{i + 1}' for i in range(n_variables)]
-    sub_labels_1_formatted = [f'sub_{x}' for x in sub_labels_1]
-    sub_labels_2_formatted = [f'sub_{x}' for x in sub_labels_2]
+    var_labels = [f'var{i + 1}' for i in range(n_variables)]
+    sub_labels_1_formatted = [f'sub{x}' for x in sub_labels_1]
+    sub_labels_2_formatted = [f'sub{x}' for x in sub_labels_2]
 
     # Create figure with three subplots - third one narrower
     fig = plt.figure(figsize=(18, max(6, n_variables * 0.15)))
-    gs = gridspec.GridSpec(1, 2, width_ratios=[3, 3], wspace=0.15)
+    max_subjects = max(n_subjects_1, n_subjects_2)
+    gs = gridspec.GridSpec(3, 3, width_ratios=[max_subjects, max_subjects, 0.1],
+                           height_ratios=[1, 0.05, 0.8], wspace=0.3, hspace=0.4)
 
     ax1 = fig.add_subplot(gs[0])
     ax2 = fig.add_subplot(gs[1])
@@ -59,8 +61,10 @@ def generate_triple_fc_heatmap(n_variables, sub_labels_1, sub_labels_2,
                 yticklabels=var_labels,
                 ax=ax1)
 
-    ax1.set_title(title_label_1, fontsize=14, pad=20)
+    ax1.set_title(title_label_1, fontsize=title_fonts, pad=20)
     ax1.set_ylabel('Variables (Flattened Connections)', fontsize=12)
+    ax1.tick_params(axis='x', rotation=45, labelsize=x_label_fonts)
+    ax1.tick_params(axis='y', rotation=0, labelsize=y_label_fonts)
     ax1.tick_params(axis='x', rotation=45)
     ax1.set_aspect('equal', adjustable='box')
 
@@ -72,12 +76,13 @@ def generate_triple_fc_heatmap(n_variables, sub_labels_1, sub_labels_2,
                 cbar=False,
                 vmin=-1, vmax=1,
                 xticklabels=sub_labels_2_formatted,
-                yticklabels=False,
+                yticklabels=var_labels,
                 ax=ax2)
 
-    ax2.set_title(title_label_2, fontsize=14, pad=20)
+    ax2.set_title(title_label_2, fontsize=title_fonts, pad=20)
     ax2.set_ylabel('', fontsize=12)
-    ax2.tick_params(axis='x', rotation=45)
+    ax2.tick_params(axis='x', rotation=45, labelsize=x_label_fonts)
+    ax2.tick_params(axis='y', rotation=0, labelsize=y_label_fonts)
     ax2.set_aspect('equal', adjustable='box')
 
     plt.tight_layout()
