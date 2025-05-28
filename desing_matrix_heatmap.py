@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 from matplotlib import gridspec
+from controlling_variables import *
 
 
 def generate_design_matrices(sub_labels_1, sub_labels_2, sub_labels_3, seed=None, save_path=None):
@@ -18,9 +19,6 @@ def generate_design_matrices(sub_labels_1, sub_labels_2, sub_labels_3, seed=None
     - seed: Random seed for reproducibility
     - save_path: Path to save the figure (optional)
     """
-
-    label_font_size = 14
-    title_font_size = 16
 
     if seed is not None:
         np.random.seed(seed)
@@ -43,16 +41,16 @@ def generate_design_matrices(sub_labels_1, sub_labels_2, sub_labels_3, seed=None
     design_3 = np.array([[category_values[i]] for i in range(min(len(category_values), n_subjects_3))])
 
     # Create subject labels
-    sub_labels_1_formatted = [f'sub_{x}' for x in sub_labels_1]
-    sub_labels_2_formatted = [f'sub_{x}' for x in sub_labels_2]
-    sub_labels_3_formatted = [f'sub_{x}' for x in sub_labels_3]
+    sub_labels_1_formatted = [f'sub{x}' for x in sub_labels_1]
+    sub_labels_2_formatted = [f'sub{x}' for x in sub_labels_2]
+    sub_labels_3_formatted = [f'sub{x}' for x in sub_labels_3]
 
     # Calculate max subjects for consistent figure height
     max_subjects = max(n_subjects_1, n_subjects_2, n_subjects_3)
 
     # Set up the figure with much thicker columns (as thick as 3 letters)
     fig = plt.figure(figsize=(6, max(6, max_subjects * 0.25)))  # Reduced width for thicker columns
-    gs = gridspec.GridSpec(1, 3, width_ratios=[0.4, 0.8, 0.4], wspace=0.6)
+    gs = gridspec.GridSpec(1, 3, width_ratios=[0.4, 0.8, 0.4], wspace=1)
 
     ax1 = fig.add_subplot(gs[0])
     ax2 = fig.add_subplot(gs[1])
@@ -69,36 +67,39 @@ def generate_design_matrices(sub_labels_1, sub_labels_2, sub_labels_3, seed=None
                 linecolor='white',  # White lines to separate subjects
                 ax=ax1)
 
-    ax1.set_title(r'$\mathbf{X}$ t-test', fontsize=title_font_size, pad=15)
-    ax1.tick_params(axis='both', which='major', labelsize=label_font_size)  # ADD THIS LINE
+    ax1.set_title(r'$\mathbf{X}$ t-test', fontsize=title_fonts, pad=15)
+    ax1.tick_params(axis='x', rotation=0, labelsize=x_label_fonts)
+    ax1.tick_params(axis='y', rotation=0, labelsize=y_label_fonts)
 
     # Design Matrix 2: Two-sample t-test
     sns.heatmap(design_2,
                 cmap='Reds',
                 cbar=False,
                 vmin=0, vmax=1,
-                xticklabels=['Group A', 'Group B'],
+                xticklabels=['Groups', ''],
                 yticklabels=sub_labels_2_formatted,
                 linewidths=0.5,  # Add lines between cells
                 linecolor='white',  # White lines to separate subjects/groups
                 ax=ax2)
 
-    ax2.set_title(r'$\mathbf{X}$ t2-test', fontsize=title_font_size, pad=15)
-    ax2.tick_params(axis='both', which='major', labelsize=label_font_size)  # ADD THIS LINE
+    ax2.set_title(r'$\mathbf{X}$ t2-test', fontsize=title_fonts, pad=15)
+    ax2.tick_params(axis='x', rotation=0, labelsize=x_label_fonts)
+    ax2.tick_params(axis='y', rotation=0, labelsize=y_label_fonts)
 
     # Design Matrix 3: Correlation test
     sns.heatmap(design_3,
                 cmap='viridis',
                 cbar=True,
                 cbar_kws={'label': 'Score'},
-                xticklabels=[''],
+                xticklabels=['Score'],
                 yticklabels=sub_labels_3_formatted,
                 linewidths = 0.5,  # Add lines between cells
                 linecolor = 'white',  # White lines to separate subjects/groups
                 ax=ax3)
 
-    ax3.set_title(r'$\mathbf{X}$ corr-test', fontsize=title_font_size, pad=15)
-    ax3.tick_params(axis='both', which='major', labelsize=label_font_size)  # ADD THIS LINE
+    ax3.set_title(r'$\mathbf{X}$ corr-test', fontsize=title_fonts, pad=15)
+    ax3.tick_params(axis='x', rotation=0, labelsize=x_label_fonts)
+    ax3.tick_params(axis='y', rotation=0, labelsize=y_label_fonts)
 
     plt.tight_layout()
 
@@ -116,7 +117,7 @@ if __name__ == "__main__":
     # Different subject lists for each test type
     sub_list_1 = [2, 5, 6, 7]  # 5 subjects for one-sample
     sub_list_2 = [1, 6, 2, 3]  # 10 subjects for two-sample
-    sub_list_3 = [1, 2, 5, 7, 8, 9]  # 5 subjects for correlation
+    sub_list_3 = [1, 2, 3, 4]  # 5 subjects for correlation
 
     design_1, design_2, design_3 = generate_design_matrices(
         sub_labels_1=sub_list_1,
