@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 from matplotlib import gridspec
+from controlling_variables import *
 
 
 def generate_tstat_heatmaps(n_variables=4, n_permutations=10, seed=None, save_path=None):
@@ -48,7 +49,7 @@ def generate_tstat_heatmaps(n_variables=4, n_permutations=10, seed=None, save_pa
     # Set up figure with 4 subplots, keeping square sizes constant
     fig = plt.figure(figsize=(16, max(8, n_variables * 0.4)))
     gs = gridspec.GridSpec(1, 5, width_ratios=[0.5, n_permutations / 2, 0.2, 0.4, n_permutations / 2],
-                           wspace=0.5)
+                           wspace=0.8)  # Increase from 0.5 to 0.8 or higher
 
     ax1 = fig.add_subplot(gs[0])
     ax2 = fig.add_subplot(gs[1])
@@ -72,9 +73,10 @@ def generate_tstat_heatmaps(n_variables=4, n_permutations=10, seed=None, save_pa
                 cbar=False,
                 ax=ax1)
 
-    ax1.set_title('Original\nt-statistics', fontsize=14, pad=15)
-    ax1.set_xlabel('Regressors', fontsize=12)
-    ax1.set_ylabel('Variables', fontsize=12)
+    ax1.set_title('Original\nt-statistics', fontsize=title_fonts, pad=15)
+    ax1.set_xlabel('Regressors', fontsize=x_label_fonts)
+    ax1.tick_params(axis='x', rotation=0, labelsize=x_label_fonts)
+    ax1.tick_params(axis='y', rotation=0, labelsize=y_label_fonts)
 
     # Plot 2: Permutation t-statistics (variables × permutations)
     sns.heatmap(tstat_permutations,
@@ -82,7 +84,7 @@ def generate_tstat_heatmaps(n_variables=4, n_permutations=10, seed=None, save_pa
                 center=0,
                 vmin=vmin, vmax=vmax,
                 xticklabels=perm_labels,
-                yticklabels=var_labels,
+                yticklabels=[],
                 square=True,
                 linewidths=0.5,
                 linecolor='white',
@@ -90,10 +92,9 @@ def generate_tstat_heatmaps(n_variables=4, n_permutations=10, seed=None, save_pa
                 cbar_kws={'label': 't-statistic'},
                 ax=ax2)
 
-    ax2.set_title('Permutation\nt-statistics', fontsize=14, pad=15)
-    ax2.set_xlabel('Permutations', fontsize=12)
-    ax2.set_ylabel('', fontsize=12)
-    ax2.tick_params(axis='x', rotation=45)
+    ax2.set_title('Permutation\nt-statistics', fontsize=x_label_fonts, pad=15)
+    ax2.set_xlabel('Permutations', fontsize=y_label_fonts)
+    ax2.tick_params(axis='x', rotation=45, labelsize=x_label_fonts)
 
     # Plot 3: Averaged original t-statistics (averaged variables × 1)
     sns.heatmap(tstat_avg_original,
@@ -108,9 +109,10 @@ def generate_tstat_heatmaps(n_variables=4, n_permutations=10, seed=None, save_pa
                 cbar=False,
                 ax=ax3)
 
-    ax3.set_title('Averaged\nt-statistics', fontsize=14, pad=15)
-    ax3.set_xlabel('Regressor', fontsize=12)
-    ax3.set_ylabel('Network', fontsize=12)
+    ax3.set_title('Averaged\nt-statistics', fontsize=title_fonts, pad=15)
+    ax3.set_xlabel('Regressor', fontsize=x_label_fonts)
+    ax3.tick_params(axis='x', rotation=0, labelsize=x_label_fonts)
+    ax3.tick_params(axis='y', rotation=0, labelsize=y_label_fonts)
 
     # Add this after the ax2.tick_params line:
     cbar = plt.colorbar(ax2.collections[0], cax=ax_cbar)
@@ -121,7 +123,7 @@ def generate_tstat_heatmaps(n_variables=4, n_permutations=10, seed=None, save_pa
                 center=0,
                 vmin=vmin, vmax=vmax,
                 xticklabels=perm_labels,
-                yticklabels=avg_var_labels,
+                yticklabels=[],
                 square=True,
                 linewidths=0.5,
                 linecolor='white',
@@ -129,9 +131,9 @@ def generate_tstat_heatmaps(n_variables=4, n_permutations=10, seed=None, save_pa
                 ax=ax4)
 
     ax4.set_title('Averaged Permutation\nt-statistics', fontsize=14, pad=15)
-    ax4.set_xlabel('Permutations', fontsize=12)
-    ax4.set_ylabel('', fontsize=12)
-    ax4.tick_params(axis='x', rotation=45)
+    ax4.set_xlabel('Permutations', fontsize=x_label_fonts)
+    ax4.set_ylabel('', fontsize=y_label_fonts)
+    ax4.tick_params(axis='x', rotation=45, labelsize=x_label_fonts)
 
     plt.tight_layout()
 

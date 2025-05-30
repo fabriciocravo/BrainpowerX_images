@@ -101,9 +101,11 @@ if __name__ == "__main__":
     # Task vs Rest comparison with difference
     fc_data_1, fc_data_2 = generate_triple_fc_heatmap(
         n_variables=4,
-        sub_labels_1=[1, 2, 3, 4, 5, 6],
-        sub_labels_2=[1, 6, 2, 3],
-        title_label_1='Rest Data (Variables × Subjects)',
-        title_label_2=r'$\mathbf{Y}$',
+        sub_labels_1=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+        sub_labels_2=[1, 2, 6, 9],
+        # title_label_1='Rest Data (Variables × Subjects)',
+        title_label_1='Total Data',
+        #title_label_2=r'$\mathbf{Y}$',
+        title_label_2='Subsample Data',
         seed=60
     )
